@@ -699,33 +699,17 @@ namespace TiledCS
         /// <returns>An instance of the class TiledSourceRect that represents a rectangle. Returns null if the provided gid was not found within the tileset.</returns>
         public TiledSourceRect GetSourceRect(TiledMapTileset mapTileset, TiledTileset tileset, int gid)
         {
-            var tileHor = 0;
-            var tileVert = 0;
+            int id = gid - mapTileset.firstgid;
+            int y = (id / tileset.Columns);
+            int x = id % tileset.Columns;
 
-            for (var i = 0; i < tileset.TileCount; i++)
-            {
-                if (i == gid - mapTileset.firstgid)
-                {
-                    var result = new TiledSourceRect();
-                    result.x = tileHor * tileset.TileWidth;
-                    result.y = tileVert * tileset.TileHeight;
-                    result.width = tileset.TileWidth;
-                    result.height = tileset.TileHeight;
+            TiledSourceRect rect = new();
+            rect.x = x * (tileset.TileWidth + tileset.Spacing) + tileset.Margin;
+            rect.y = y * (tileset.TileHeight + tileset.Spacing) + tileset.Margin;
+            rect.width = tileset.TileWidth;
+            rect.height = tileset.TileHeight;
 
-                    return result;
-                }
-
-                // Update x and y position
-                tileHor++;
-
-                if (tileHor == tileset.Image.width / tileset.TileWidth)
-                {
-                    tileHor = 0;
-                    tileVert++;
-                }
-            }
-
-            return null;
+            return rect;
         }
 
         /// <summary>
